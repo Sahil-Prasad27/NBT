@@ -1,17 +1,15 @@
 const { Pool } = require('pg');
 require('dotenv').config();
 
+// Configure connection pool
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASS,
-  port: process.env.DB_PORT,
+  connectionString: process.env.DATABASE_URL || process.env.DB_CONNECTION_STRING,
   ssl: {
     rejectUnauthorized: false
   }
 });
 
+// Test the connection
 pool.query('SELECT NOW()', (err) => {
   if (err) {
     console.error('❌ Database connection error:', err);
