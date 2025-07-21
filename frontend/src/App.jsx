@@ -1,4 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import MainPage from './pages/MainPage'; 
 import Login from './auth/Login';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './auth/ProtectedRoute';
@@ -9,14 +11,19 @@ import Team from './pages/Team';
 import Mission from './pages/Mission';
 import Contact from './pages/Contact.jsx';
 import Overview from './pages/Overview';
-
+import ClientList from './pages/ClientList';
+import FaqSection from './pages/FaqSection.jsx';
+import Coupons from './pages/Coupons.jsx';
+import Testimonial from './pages/Testimonial.jsx';
 
 function App() {
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<MainPage />} /> {/* 👈 Main landing page */}
+        <Route path="/login" element={<Login />} />
+
         {/* Protected Routes */}
         <Route
           path="/dashboard"
@@ -71,6 +78,38 @@ function App() {
           element={
             <ProtectedRoute>
               <Overview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/clientlist"
+          element={
+            <ProtectedRoute>
+              <ClientList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/faqsection"
+          element={
+            <ProtectedRoute>
+              <FaqSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/coupons"
+          element={
+            <ProtectedRoute>
+              <Coupons />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/testimonials"
+          element={
+            <ProtectedRoute>
+              <Testimonial />
             </ProtectedRoute>
           }
         />

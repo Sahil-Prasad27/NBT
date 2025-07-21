@@ -19,6 +19,10 @@ const Navbar = () => {
         <Link to="/mission" className="hover:text-yellow-300">Mission</Link>
         <Link to="/contact" className="hover:text-yellow-300">Contact</Link>
         <Link to="/overview" className="hover:text-yellow-300">Overview</Link>
+        <Link to="/clientlist" className="hover:text-yellow-300">Clientlist</Link>
+        <Link to="/faqsection" className="hover:text-yellow-300">FAQ</Link>
+        <Link to="/coupons" className="hover:text-yellow-300">Coupen</Link>
+        <Link to="/testimonials" className="hover:text-yellow-300">Testimonials</Link>
       </div>
       <button onClick={logout} className="bg-red-600 px-3 py-1 rounded hover:bg-red-700">
         Logout

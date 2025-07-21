@@ -12,12 +12,11 @@ function Courses() {
     description_1: '',
     title: '',
     description_2: '',
-    price: '',
     educator: '',
     timeline: '',
     people: '',
     rating: '',
-    coupon: ''
+    link: ''
   });
 
   const [editingId, setEditingId] = useState(null);
@@ -28,7 +27,7 @@ function Courses() {
 
   const fetchCourses = async () => {
     setLoading(true);
-    const res = await API.get('/courses');
+    const res = await API.get('/courses?select=*');
     setCourses(res.data);
     setLoading(false);
   };
@@ -39,24 +38,26 @@ function Courses() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (editingId) {
-      await API.put(`/courses/${editingId}`, formData);
+      await API.patch(`/courses?id=eq.${editingId}`, formData);
     } else {
-      await API.post('/courses', formData);
+      await API.post('/courses', [formData]); // Supabase expects array
     }
+
     setFormData({
       image: '',
       type: '',
       description_1: '',
       title: '',
       description_2: '',
-      price: '',
       educator: '',
       timeline: '',
       people: '',
       rating: '',
-      coupon: ''
+      link: ''
     });
+
     setEditingId(null);
     fetchCourses();
   };
@@ -68,7 +69,7 @@ function Courses() {
 
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this course?')) {
-      await API.delete(`/courses/${id}`);
+      await API.delete(`/courses?id=eq.${id}`);
       fetchCourses();
     }
   };
@@ -86,12 +87,11 @@ function Courses() {
             'description_1',
             'title',
             'description_2',
-            'price',
             'educator',
             'timeline',
             'people',
             'rating',
-            'coupon'
+            'link'
           ].map((field) => (
             <input
               key={field}
@@ -100,8 +100,8 @@ function Courses() {
               onChange={handleChange}
               placeholder={field.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())}
               className="border p-2"
-              type={field === 'price' || field === 'people' || field === 'rating' ? 'number' : 'text'}
-              step={field === 'price' || field === 'rating' ? '0.01' : undefined}
+              type={field === 'people' || field === 'rating' ? 'number' : 'text'}
+              step={field === 'rating' ? '0.01' : undefined}
               required
             />
           ))}
@@ -119,9 +119,9 @@ function Courses() {
               <tr className="bg-gray-200">
                 <th className="border p-2">Title</th>
                 <th className="border p-2">Educator</th>
-                <th className="border p-2">Price</th>
                 <th className="border p-2">People</th>
                 <th className="border p-2">Rating</th>
+                <th className="border p-2">Link</th>
                 <th className="border p-2">Actions</th>
               </tr>
             </thead>
@@ -130,9 +130,13 @@ function Courses() {
                 <tr key={course.id}>
                   <td className="border p-2">{course.title}</td>
                   <td className="border p-2">{course.educator}</td>
-                  <td className="border p-2">₹{course.price}</td>
                   <td className="border p-2">{course.people}</td>
                   <td className="border p-2">{course.rating}</td>
+                  <td className="border p-2">
+                    <a href={course.link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                      View
+                    </a>
+                  </td>
                   <td className="border p-2 space-x-2">
                     <button
                       onClick={() => handleEdit(course)}
