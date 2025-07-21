@@ -1,15 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 require('dotenv').config();
 
 const app = express();
+
 
 // === MIDDLEWARE ===
 app.use(cors());
 app.use(express.json());
 
 // === ROUTES ===
+// ✅ Import route modules
 try {
   app.use('/clients', require('./routes/clients'));
   app.use('/faqs', require('./routes/faqs'));
@@ -26,18 +27,8 @@ try {
   console.error('❌ Route error:', err.message);
 }
 
-// === DEPLOYMENT (optional static serve) ===
-if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, '..', 'frontend', 'dist');
-  app.use(express.static(publicPath));
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(publicPath, 'index.html'));
-  });
-}
-
-// === START SERVER ===
+// === SERVER LISTENER ===
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server is running at http://localhost:${PORT}`);
 });
