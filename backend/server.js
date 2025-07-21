@@ -1,43 +1,59 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+import coursesRoutes from './routes/courses.js';
+import servicesRoutes from './routes/services.js';
+import teamRoutes from './routes/team.js';
+import testimonialsRoutes from './routes/testimonials.js';
+import contactRoutes from './routes/contact.js';
+import missionRoutes from './routes/mission.js';
+import overviewRoutes from './routes/overview.js';
+import couponsRoutes from './routes/coupons.js';
+import meetOurTeamRoutes from './routes/meetOurTeam.js';
+import faqsRoutes from './routes/faqs.js';
+import clientsRoutes from './routes/clients.js';
+import authRoutes from './routes/auth.js';
+
+import { connectDB } from './db.js';
+
+dotenv.config();
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// === MIDDLEWARE ===
+// Needed for __dirname in ES Module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// === ROUTES ===
-try {
-  app.use('/clients', require('./routes/clients'));
-  app.use('/faqs', require('./routes/faqs'));
-  app.use('/api/mission', require('./routes/mission'));
-  app.use('/api/auth', require('./routes/auth'));
-  app.use('/api/meet-our-team', require('./routes/meetOurTeam'));
-  app.use('/api/services', require('./routes/services'));
-  app.use('/api/courses', require('./routes/courses'));
-  app.use('/api/contact', require('./routes/contact'));
-  app.use('/api/overview', require('./routes/overview'));
-  app.use('/api/coupons', require('./routes/coupons'));
-  app.use('/api/testimonials', require('./routes/testimonials'));
-} catch (err) {
-  console.error('❌ Route error:', err.message);
-}
+// Routes
+app.use('/api/courses', coursesRoutes);
+app.use('/api/services', servicesRoutes);
+app.use('/api/team', teamRoutes);
+app.use('/api/testimonials', testimonialsRoutes);
+app.use('/api/contact', contactRoutes);
+app.use('/api/mission', missionRoutes);
+app.use('/api/overview', overviewRoutes);
+app.use('/api/coupons', couponsRoutes);
+app.use('/api/meet-our-team', meetOurTeamRoutes);
+app.use('/api/faqs', faqsRoutes);
+app.use('/api/clients', clientsRoutes);
+app.use('/api/auth', authRoutes);
 
-// === DEPLOYMENT (optional static serve) ===
-if (process.env.NODE_ENV === 'production') {
-  const publicPath = path.join(__dirname, '..', 'frontend', 'dist');
-  app.use(express.static(publicPath));
+// Serve frontend (optional for fullstack deploy)
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
+app.get('*', (_, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+});
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(publicPath, 'index.html'));
+// Connect DB & Start Server
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
   });
-}
-
-// === START SERVER ===
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
