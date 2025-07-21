@@ -1,21 +1,21 @@
-const { Pool } = require('pg');
+import pkg from 'pg';
+const { Pool } = pkg;
 
-const pool = new Pool({
-  user: 'postgres.brxbmukalvaqcqwnmvdl',
-  host: 'aws-0-ap-southeast-1.pooler.supabase.com',
-  database: 'postgres',
-  password: 'hvh4U001xs2iWVRD',
-  port: 5432,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
+export const connectDB = async () => {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
 
-pool.query('SELECT NOW()', (err) => {
-  if (err) {
-    console.error('❌ Database connection error:', err);
-  } else {
-    console.log('✅ Connected to Supabase PostgreSQL');
+  try {
+    await pool.connect();
+    console.log('Connected to PostgreSQL');
+  } catch (err) {
+    console.error('Database connection error:', err);
+    process.exit(1);
   }
-});
-module.exports = pool;
+
+  return pool;
+};
