@@ -7,6 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ✅ Root route to prevent "Cannot GET /"
+app.get('/', (req, res) => {
+  res.send('🚀 API Server is up and running!');
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
